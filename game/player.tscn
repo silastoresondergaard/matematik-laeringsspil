@@ -1,25 +1,72 @@
-[gd_scene load_steps=4 format=3 uid="uid://bfhai0r1a18ye"]
+[gd_scene load_steps=9 format=3 uid="uid://bfhai0r1a18ye"]
 
-[ext_resource type="Texture2D" uid="uid://dloxnu58qaba3" path="res://icon.svg" id="1_4flbx"]
 [ext_resource type="Script" uid="uid://d2ide8i6n0eid" path="res://Scripts/player.gd" id="1_onrkg"]
+[ext_resource type="Texture2D" uid="uid://mdtg5t26j7b5" path="res://items/bat.png" id="2_onrkg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i3pqv"]
-size = Vector2(16.25, 18)
+size = Vector2(24.5, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_onrkg"]
+atlas = ExtResource("2_onrkg")
+region = Rect2(0, 0, 32, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i3pqv"]
+atlas = ExtResource("2_onrkg")
+region = Rect2(0, 0, 32, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hqtel"]
+atlas = ExtResource("2_onrkg")
+region = Rect2(32, 0, 32, 31)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sweqy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_onrkg")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i3pqv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hqtel")
+}],
+"loop": true,
+"name": &"movement",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_onrkg"]
+size = Vector2(33, 21)
 
 [node name="player" type="CharacterBody2D"]
+z_index = 10
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_onrkg")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-38, -44.5)
-scale = Vector2(0.140625, 0.148438)
-texture = ExtResource("1_4flbx")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-38, -45)
 shape = SubResource("RectangleShape2D_i3pqv")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(2.27374e-13, -2.27374e-13)
+scale = Vector2(1.98387, 1.98387)
+sprite_frames = SubResource("SpriteFrames_sweqy")
+animation = &"idle"
+frame_progress = 0.53311
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-1.5, 0.5)
+shape = SubResource("RectangleShape2D_onrkg")
+
 [connection signal="child_entered_tree" from="CollisionShape2D" to="." method="_on_collision_shape_2d_child_entered_tree"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
