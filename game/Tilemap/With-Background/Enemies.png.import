@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwgl864u81ok4"
-path="res://.godot/imported/Environment.png-585d63a835c2553d1eb56227c89bd9bd.ctex"
+uid="uid://chfw2r1627bms"
+path="res://.godot/imported/Enemies.png-b7db7b24a0b046e1185c0cd93e43d831.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Retro-Lines-16x16/Environment.png"
-dest_files=["res://.godot/imported/Environment.png-585d63a835c2553d1eb56227c89bd9bd.ctex"]
+source_file="res://Tilemap/With-Background/Enemies.png"
+dest_files=["res://.godot/imported/Enemies.png-b7db7b24a0b046e1185c0cd93e43d831.ctex"]
 
 [params]
 

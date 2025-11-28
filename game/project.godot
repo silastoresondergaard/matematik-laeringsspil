@@ -10,14 +10,14 @@ config_version=5
 
 [application]
 
-config/name="lærings spil"
+config/name="Læringsspil Matematik"
 run/main_scene="uid://bng8a15ak1050"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://global.tscn"
+Global="*res://Scripts/Global.gd"
 
 [global_group]
 

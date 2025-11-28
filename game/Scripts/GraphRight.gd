@@ -1,7 +1,7 @@
 extends Node2D
 
-@onready var player: CharacterBody2D = null
-var valid := false
+@onready var player: CharacterBody2D = %player
+@onready var input_field: LineEdit = %InputField
 
 @export var graph_width := 1200.0
 @export var graph_height := 900.0
@@ -12,28 +12,25 @@ var valid := false
 @export var line_color := Color.CYAN
 @export var axis_color := Color(1.0, 1.0, 1.0, 0.20)
 @export var grid_color := Color(0.3, 0.3, 0.3, 0.1)
-
-var graph_points: PackedVector2Array = []
 @export var offset_from_player := Vector2(0, -450)
 
+var graph_points: PackedVector2Array = []
+
+var valid := false
 var cooldowntimer = 0.0
 var cooldown_duration = 0.2
 var can_submit =true
 var frozen := false
 var frozen_position := Vector2.ZERO
-var input_field: LineEdit
 var current_function: String = ""
 
 func _ready():
 	z_index = 5
 	
-	input_field = get_tree().get_root().find_child("InputField", true, false)
-	if input_field:
-		input_field.text_submitted.connect(_on_submit)
-		input_field.text_changed.connect(_on_text_changed)
+	input_field.text_submitted.connect(_on_submit)
+	input_field.text_changed.connect(_on_text_changed)
 	
-	player = get_tree().get_root().find_child("player", true, false)
-	set_process(true)
+	_on_text_changed(input_field.text)
 
 func _process(delta: float):
 	if cooldowntimer > 0:
@@ -48,7 +45,8 @@ func _process(delta: float):
 	if frozen:
 		global_position = frozen_position
 	elif player != null:
-		global_position = player.global_position + offset_from_player
+		var adjusted_offset = offset_from_player
+		global_position = player.global_position + adjusted_offset
 	
 	queue_redraw()
 
@@ -156,8 +154,8 @@ func _on_submit(text: String):
 	
 	valid = false
 	
-	if not text.to_lower().contains("x"):
-		return
+	if text == "": text = "0x"
+	else: text = text + "+0x"
 	
 	var parsed_text = parse_implicit_multiplication(text.replace("^", "**"))
 	current_function = parsed_text
@@ -178,11 +176,8 @@ func _on_submit(text: String):
 			player._on_input_field_text_submitted(text)
 
 func _on_text_changed(text: String):
-	if not text.to_lower().contains("x"): 
-		valid = false
-		graph_points.clear()
-		queue_redraw()
-		return
+	if text == "": text = "0x"
+	else: text = text + "+0x"
 	
 	var parsed_text = parse_implicit_multiplication(text.replace("^", "**"))
 	current_function = parsed_text
@@ -229,10 +224,6 @@ func _draw():
 	
 	if valid and graph_points.size() > 1:
 		draw_function(graph_pos)
-	
-	var status_text = "🧊 FROSSET" if frozen else "👤 FØLGER SPILLER"
-	var status = status_text + " | Range: [0,1] | Funktion: " + current_function
-	draw_string(ThemeDB.fallback_font, graph_pos + Vector2(10, graph_height + 20), status, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.YELLOW)
 
 func draw_grid(offset: Vector2):
 	var grid_lines_x := 10

@@ -1,8 +1,7 @@
 extends Node2D
 
-
-@onready var player: CharacterBody2D = null
-var valid := false
+@onready var input_field: LineEdit = %InputField
+@onready var player: CharacterBody2D = %player
 
 @export var graph_width := 1200.0
 @export var graph_height := 900.0
@@ -13,24 +12,21 @@ var valid := false
 @export var line_color := Color.CYAN
 @export var axis_color := Color(1.0, 1.0, 1.0, 0.20)
 @export var grid_color := Color(0.3, 0.3, 0.3, 0.1)
-
-var graph_points: PackedVector2Array = []
 @export var offset_from_player := Vector2(-1200, -450)
+
+var valid := false
+var graph_points: PackedVector2Array = []
 var frozen := false
 var frozen_position := Vector2.ZERO
-var input_field: LineEdit
 var current_function: String = ""
 
 func _ready():
 	z_index = 5
 	
-	input_field = get_tree().get_root().find_child("InputField", true, false)
-	if input_field:
-		input_field.text_submitted.connect(_on_submit)
-		input_field.text_changed.connect(_on_text_changed)
+	input_field.text_submitted.connect(_on_submit)
+	input_field.text_changed.connect(_on_text_changed)
 	
-	player = get_tree().get_root().find_child("player", true, false)
-	set_process(true)
+	_on_text_changed(input_field.text)
 
 func _process(_delta: float):
 	if player != null:
@@ -156,8 +152,8 @@ func find_matching_paren(text: String, start: int) -> int:
 func _on_submit(text: String):
 	valid = false
 	
-	if not text.to_lower().contains("x"):
-		return
+	if text == "": text = "0x"
+	else: text = text + "+0x"
 	
 	var parsed_text = parse_implicit_multiplication(text.replace("^", "**"))
 	current_function = parsed_text
@@ -171,11 +167,8 @@ func _on_submit(text: String):
 		frozen_position = global_position
 
 func _on_text_changed(text: String):
-	if not text.to_lower().contains("x"):
-		valid = false
-		graph_points.clear()
-		queue_redraw()
-		return
+	if text == "": text = "0x"
+	else: text = text + "+0x"
 	
 	var parsed_text = parse_implicit_multiplication(text.replace("^", "**"))
 	current_function = parsed_text

@@ -2,49 +2,36 @@ extends CharacterBody2D
 
 @export var controller: CanvasLayer
 @export var graph_node: Node2D
+
 @onready var animated_sprite = $AnimatedSprite2D 
 
-var is_dying=false
-var last_safe_position=Vector2.ZERO
-var spawn_position = (Vector2.ZERO)
 var GRAVITY: float = ProjectSettings.get_setting("physics/2d/default_gravity")
-var is_dead:=false
-var new_position_y:=0.0
-var character_speed := 300.0
+var CHARACTER_SPEED := 300.0
+
+var is_dying := false
+var last_safe_position = Vector2.ZERO
+var spawn_position = Vector2.ZERO
 var t := 0.0
 var original_y := 0.0
 var original_x := 0.0
 var active := false
 var prev_y_velocity := 0.0
 
-
 func _ready():
 	original_y = global_position.y
 	original_x = global_position.x
 	z_index = 20
-
+	
 	spawn_position = Vector2(144,332)
 	
-	
-	if graph_node == null:
-		graph_node = get_tree().get_root().find_child("GraphNode", true, false)
-		
 	add_to_group("player")
 	
 	if Global.checkpoint_pos != Vector2(-999, -999):
 		spawn_position=Global.checkpoint_pos
 		global_position=Global.checkpoint_pos
 
-
-
-
 func _process(delta: float) -> void:
 	move_and_slide()
-
-func set_checkpoint(checkpoint_position: Vector2):
-	spawn_position = checkpoint_position
-	print("Checkpoint activated! New spawn_position: ", spawn_position)
-
 
 func _physics_process(delta):
 	if is_dying:
@@ -62,7 +49,6 @@ func _physics_process(delta):
 		is_dying=false
 		return
 	
-	
 	if global_position.y < -1000 and active: 
 		active = false
 		t = 0
@@ -71,7 +57,6 @@ func _physics_process(delta):
 			graph_node.unfreeze()
 		global_position=last_safe_position
 		return
-	
 	
 	if Input.is_action_just_pressed("stop") and active:
 		active = false
@@ -108,7 +93,7 @@ func _physics_process(delta):
 		active = false
 		velocity.x = 0.0
 		return
-		
+	
 	var graph_height = graph_node.graph_height
 	var y_max = graph_node.y_max
 	var y_min = graph_node.y_min
@@ -124,7 +109,7 @@ func _physics_process(delta):
 	var x_progress = remap(t, 0.0, 1.0, 0.0, graph_width)
 	global_position.x = original_x + x_progress
 	
-	velocity.x = character_speed
+	velocity.x = CHARACTER_SPEED
 	
 	if t >= 1.0:
 		active = false
@@ -145,7 +130,9 @@ func _physics_process(delta):
 			if graph_node != null and graph_node.has_method("unfreeze"):
 				graph_node.unfreeze()
 
-
+func set_checkpoint(checkpoint_position: Vector2):
+	spawn_position = checkpoint_position
+	print("Checkpoint activated! New spawn_position: ", spawn_position)
 
 func die():
 	global_position = spawn_position  # Always use spawn_position
@@ -153,21 +140,11 @@ func die():
 	active = false
 	t = 0.0
 
-
-
-
-
-
 func _on_input_field_text_submitted(new_text: String) -> void:
 	active = true
 	t = 0.0
 	original_y = global_position.y
 	original_x = global_position.x
-
-func _on_collision_shape_2d_child_entered_tree(node: Node) -> void:
-	pass 
-
-
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if is_dying:
@@ -186,7 +163,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		return
 	
 	if body is TileMapLayer and body.name == "aktuelt" and active:
-	# Stop the graph movement
+		# Stop the graph movement
 		active = false
 		t = 0
 		velocity.x = 0.0

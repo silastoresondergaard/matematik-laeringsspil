@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqsdfcepi6yhj"
-path="res://.godot/imported/Player.png-9ccb67d00cc61117dd4b337c30414dde.ctex"
+uid="uid://b7kgkq4nrilyv"
+path="res://.godot/imported/Enemies.png-105e0db9f8812017ac117692f6fcd77b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Retro-Lines-16x16/Player.png"
-dest_files=["res://.godot/imported/Player.png-9ccb67d00cc61117dd4b337c30414dde.ctex"]
+source_file="res://Tilemap/Enemies.png"
+dest_files=["res://.godot/imported/Enemies.png-105e0db9f8812017ac117692f6fcd77b.ctex"]
 
 [params]
 
